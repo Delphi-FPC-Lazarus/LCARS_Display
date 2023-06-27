@@ -1,4 +1,4 @@
-# Daten von Resol (Solarthermie) abfragen und in Volkszaehler Datenbank einspeisen
+# Daten von Resol (Solarthermie) abfragen und webscreen erstellen
 
 import json
 import re
