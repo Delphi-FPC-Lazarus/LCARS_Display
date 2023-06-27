@@ -1,4 +1,4 @@
-# Daten von Resol (Solarthermie) abfragen und Content html erstellen
+# Daten von Resol (Solarthermie) abfragen und in Volkszaehler Datenbank einspeisen
 
 import json
 import re
@@ -7,6 +7,20 @@ import re
 print("<html><body>")
 print("<table style='font-family:Arial; font-size:40'>")
 
+# Daten vom vzlogger
+with open("/home/pi/data/vzlogger.json") as json_format_file: 
+  resoljson = json.load(json_format_file)
+  
+resoljsonroot = resoljson["data"][0]
+value = resoljsonroot["tuples"][0][1]
+value = int(value);
+if (value > 0):
+	print("<tr><td width=250>Bezug &Oslash;:</td><td>");
+else:
+	print("<tr><td width=250>Liefer.&Oslash;:</td><td>");
+print(str(value)+"W");
+print("</td/tr>");
+
 # Daten von Stecagrid (Solar PV) - die wird zyklisch geladen
 from xml.dom import minidom
 xmldoc = minidom.parse('/home/pi/data/stecagrid.xml')
@@ -14,33 +28,20 @@ itemlist = xmldoc.getElementsByTagName('Measurement')
 
 value = itemlist[2].attributes['Value'].value
 values = value.split('.');
-print("<tr><td width=250>Strom:</td><td>");
+print("<tr><td width=250>Strom S&uuml;d:</td><td>");
+print(values[0].replace('-nan','0')+"W");
+print("</td/tr>");
+
+f = open("/home/pi/data/esppowermeter.data", "r")
+value = f.read()
+values = value.split('.');
+print("<tr><td width=250>Strom Ost:</td><td>");
 print(values[0]+"W");
 print("</td/tr>");
 
 print("<tr><td width=250></td><td>");
 print("&nbsp;");
 print("</td/tr>");
-
-print("<tr><td width=250>Temperatur:</td><td>");
-print("&nbsp;");
-print("</td/tr>");
-print("<tr><td width=250></td><td>");
-print("&nbsp;");
-print("</td/tr>");
-
-# Daten von Stromzaehler
-# (macht der vzlogger, hab ich hier nicht
-# value = ...
-#if value < 0:
-#	print("<tr><td width=250>Lieferung:</td><td>");
-#	value = -value;
-#	print(value+"W");
-#	print("</td/tr>");
-#else:
-#	print("<tr><td width=250>Bezug:</td><td>");
-#	print(value+"W");
-#	print("</td/tr>");
 
 # Daten von Resol (Solarthermie) - die wird zyklisch geladen
 with open("/home/pi/data/resol.json") as json_format_file: 
