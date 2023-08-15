@@ -1,4 +1,4 @@
-# Daten von Resol (Solarthermie) abfragen und webscreen erstellen
+# Daten von Resol (Solarthermie) abfragen und in Volkszaehler Datenbank einspeisen
 
 import json
 import re
@@ -21,6 +21,11 @@ else:
 print(str(value)+"W");
 print("</td/tr>");
 
+# Leerzeile
+print("<tr><td width=250></td><td>");
+print("&nbsp;");
+print("</td/tr>");
+
 # Daten von Stecagrid (Solar PV) - die wird zyklisch geladen
 from xml.dom import minidom
 xmldoc = minidom.parse('/home/pi/data/stecagrid.xml')
@@ -32,15 +37,33 @@ print("<tr><td width=250>Strom S&uuml;d:</td><td>");
 print(values[0].replace('-nan','0')+"W");
 print("</td/tr>");
 
-f = open("/home/pi/data/esppowermeter.data", "r")
+# Daten von PV Ost
+f = open("/home/pi/data/esppvost.data", "r")
 value = f.read()
 values = value.split('.');
 print("<tr><td width=250>Strom Ost:</td><td>");
 print(values[0]+"W");
 print("</td/tr>");
 
-print("<tr><td width=250></td><td>");
-print("&nbsp;");
+# Daten vom Akku
+f = open("/home/pi/data/espakku.data", "r")
+value = f.read()
+values = value.split('.');
+f = open("/home/pi/data/espakkustate.data", "r")
+state = f.read()
+if (state == "F"):
+	state = "Fehler"
+if (state == "S"):
+	state = "--"
+if (state == "C"):
+	state = "L&auml;d" 
+if (state == "D"):
+	state = "Einsp."
+if (state == "?"):
+	state = "??"
+
+print("<tr><td width=250>Akku: "+state+"</td><td>");
+print(values[0]+"W");
 print("</td/tr>");
 
 # Daten von Resol (Solarthermie) - die wird zyklisch geladen
