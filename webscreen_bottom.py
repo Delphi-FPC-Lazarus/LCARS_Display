@@ -9,10 +9,10 @@ print("<table style='font-family:Arial; font-size:40'>")
 
 # Daten vom vzlogger
 with open("/home/pi/data/vzlogger.json") as json_format_file: 
-  resoljson = json.load(json_format_file)
+  vzjson = json.load(json_format_file)
   
-resoljsonroot = resoljson["data"][0]
-value = resoljsonroot["tuples"][0][1]
+vzjsonroot = vzjson["data"][0]
+value = vzjsonroot["tuples"][0][1]
 value = int(value);
 if (value > 0):
 	print("<tr><td width=250>Bezug &Oslash;:</td><td>");
